@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: fap_cache_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: always
+
+  cache-api:
+    build: .
+    container_name: fap_cache_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - API_PORT=8000
+      - API_WORKERS=4
+    depends_on:
+      - redis
+    restart: always
+
+volumes:
+  redis_data:
