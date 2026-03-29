@@ -15,6 +15,14 @@ CACHE_LIST_LIMIT = int(os.getenv("CACHE_LIST_LIMIT", "100"))
 
 app = FastAPI(title="fap_cache_service", version="1.0.0")
 
+@app.get("/")
+def read_root():
+    return {
+        "message": "FAP Cache Service is running!",
+        "health": "/cache/health",
+        "docs": "/docs"
+    }
+
 redis_client = redis.Redis(
     host=REDIS_HOST,
     port=REDIS_PORT,

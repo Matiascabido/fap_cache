@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-API_PORT="${API_PORT:-8000}"
-API_WORKERS="${API_WORKERS:-4}"
+API_PORT="${PORT:-${API_PORT:-8000}}"
+API_WORKERS="${API_WORKERS:-1}"
 
 # Start Redis in background
 redis-server /usr/local/etc/redis/redis.conf --daemonize yes

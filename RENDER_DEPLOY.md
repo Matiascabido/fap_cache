@@ -52,15 +52,33 @@ En ese caso, la configuración correcta es:
 - `API_WORKERS=4`
 - `CACHE_LIST_LIMIT=100`
 
-### Start command para Render
+### Configuración en el Dashboard de Render
 
-Usa este start command:
+1. Crea un nuevo **Web Service**.
+2. Conecta tu repositorio.
+3. Elige **Docker** como el Runtime.
+4. En **Environment Variables**, añade:
+   - `REDIS_HOST`: `localhost` (Obligatorio para que la API encuentre el Redis interno)
+   - `API_WORKERS`: `1` (Recomendado para el plan gratuito para evitar exceso de memoria)
+   - `PORT`: `8000` (Render lo detectará automáticamente, pero puedes forzarlo)
+   - `CACHE_TTL_SECONDS`: `60` (Opcional, tiempo de vida por defecto)
+5. En **Health Check Path**, usa `/cache/health`.
+
+### Ejecución Local con Docker (Modo Único)
+
+Si quieres probar exactamente lo que se ejecutará en Render de forma local con un solo comando de Docker:
 
 ```bash
-/usr/local/bin/docker-entrypoint.sh
+# Construir la imagen
+docker build -t fap-cache-service .
+
+# Ejecutar el contenedor
+docker run -p 8000:8000 \
+  -e REDIS_HOST=localhost \
+  -e API_WORKERS=1 \
+  fap-cache-service
 ```
 
-### Nota importante
+### Persistencia en el plan gratuito
 
-`REDIS_HOST=redis` solo funciona si Redis está disponible en la misma red de contenedores y accesible por ese nombre.
-En un solo contenedor con Redis integrado, el host debe ser `localhost`.
+Ten en cuenta que en el plan **Free** de Render, los datos de Redis se perderán cuando el servicio entre en reposo (spin-down) o se reinicie, ya que no hay discos persistentes gratuitos para servicios web.

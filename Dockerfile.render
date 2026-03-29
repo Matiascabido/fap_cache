@@ -2,8 +2,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV API_PORT=8000
+ENV API_WORKERS=1
+ENV PYTHONUNBUFFERED=1
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends redis-server \
+    && mkdir -p /data \
+    && chown -R root:root /data \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

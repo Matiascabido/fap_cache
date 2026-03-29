@@ -4,6 +4,8 @@ WORKDIR /app
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends redis-server \
+    && mkdir -p /data \
+    && chown -R root:root /data \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -15,7 +17,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENV API_PORT=8000
-ENV API_WORKERS=4
+ENV API_WORKERS=1
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
