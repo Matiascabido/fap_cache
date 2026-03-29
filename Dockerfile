@@ -2,14 +2,21 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends redis-server \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY cache_service.py .
+COPY redis/redis.conf /usr/local/etc/redis/redis.conf
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENV API_PORT=8000
 ENV API_WORKERS=4
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
-CMD ["sh", "-c", "uvicorn cache_service:app --host 0.0.0.0 --port ${API_PORT} --workers ${API_WORKERS} --log-level info"]
+CMD ["/usr/local/bin/docker-entrypoint.sh"]

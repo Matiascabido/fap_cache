@@ -79,7 +79,8 @@ El servicio HTTP y Redis pueden configurarse con variables de entorno en `.env`:
 
 - `REDIS_HOST` - host de Redis.
   - Si usas `docker compose` con este `docker-compose.yml`, el valor es `redis`.
-  - Si usas un solo contenedor con Redis integrado (por ejemplo Render con `Dockerfile.render`), usa `localhost`.
+  - Si usas un solo contenedor con Redis integrado (por ejemplo Render con `Dockerfile` o `Dockerfile.render`), usa `localhost`.
+  - En Render, usa las variables de entorno de la plataforma para anular este valor.
 - `REDIS_PORT` - puerto de Redis (por defecto `6379`).
 - `REDIS_DB` - base de datos Redis (por defecto `0`).
 - `REDIS_PASSWORD` - contraseña de Redis si se usa.
@@ -127,6 +128,20 @@ Render no levanta un `docker-compose.yml` automáticamente dentro de una sola ap
 - Si Render ejecuta solo el contenedor de la app, no habrá ningún host `redis`.
 
 La alternativa es usar dos servicios Render conectados en red privada o empaquetar Redis y la app en una sola imagen.
+
+### Comandos para Render
+
+- `Build Command`:
+
+```bash
+docker build -t fap-cache .
+```
+
+- `Start Command`:
+
+```bash
+/usr/local/bin/docker-entrypoint.sh
+```
 
 Para más detalles, consulta `RENDER_DEPLOY.md`.
 

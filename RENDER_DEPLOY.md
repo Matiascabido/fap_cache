@@ -38,8 +38,8 @@ Render Web Services usa un único `Dockerfile` para construir y ejecutar una sol
 
 ### Opción recomendada para Render
 
-Si querés desplegar en un solo contenedor y no usar un servicio Redis externo, usa `Dockerfile.render`.
-Este Dockerfile instala Redis dentro de la imagen y arranca Redis antes de iniciar la API.
+Este repositorio ya soporta un despliegue de un solo contenedor con Redis integrado.
+Puedes usar el `Dockerfile` principal o `Dockerfile.render`, ambos están configurados para instalar Redis y copiar el entrypoint.
 
 En ese caso, la configuración correcta es:
 
@@ -54,7 +54,7 @@ En ese caso, la configuración correcta es:
 
 ### Start command para Render
 
-Si Render usa `Dockerfile.render`, el start command puede ser:
+Usa este start command:
 
 ```bash
 /usr/local/bin/docker-entrypoint.sh
