@@ -77,9 +77,9 @@ curl http://localhost:8000/cache/cache:usuario:1
 
 El servicio HTTP y Redis pueden configurarse con variables de entorno en `.env`:
 
-- `REDIS_HOST` - host de Redis (por defecto `redis` dentro de Docker).
+- `REDIS_HOST` - host de Redis.
   - Si usas `docker compose` con este `docker-compose.yml`, el valor es `redis`.
-  - Si accedes a Redis desde tu host local, usa `localhost`.
+  - Si usas un solo contenedor con Redis integrado (por ejemplo Render con `Dockerfile.render`), usa `localhost`.
 - `REDIS_PORT` - puerto de Redis (por defecto `6379`).
 - `REDIS_DB` - base de datos Redis (por defecto `0`).
 - `REDIS_PASSWORD` - contraseña de Redis si se usa.
@@ -118,7 +118,17 @@ Si en cambio usas un Redis externo fuera del stack, pon el host real de esa inst
 
 Para más detalles, consulta `NEON_DEPLOY.md`.
 
-## ¿Endpoints o conexión directa desde el otro proyecto?
+## Despliegue en Render
+
+Render no levanta un `docker-compose.yml` automáticamente dentro de una sola aplicación web.
+
+- Con un solo contenedor que incluya Redis y la app, usa `REDIS_HOST=localhost`.
+- `REDIS_HOST=redis` solo funciona si Redis está disponible en la misma red de contenedores y accesible por ese nombre.
+- Si Render ejecuta solo el contenedor de la app, no habrá ningún host `redis`.
+
+La alternativa es usar dos servicios Render conectados en red privada o empaquetar Redis y la app en una sola imagen.
+
+Para más detalles, consulta `RENDER_DEPLOY.md`.
 
 - Si el otro proyecto ya puede conectarse directamente a Redis, lo más eficiente es usar Redis como cache directo desde ese proyecto.
 - Si necesitas desacoplar el acceso, exponer un pequeño servicio HTTP es una buena opción. Este repositorio ya ofrece ambos modelos:
