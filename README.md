@@ -97,7 +97,13 @@ El servicio HTTP y Redis pueden configurarse con variables de entorno en `.env`:
 
 ## Despliegue en Neon
 
-Para Neon, no es necesario ejecutar Redis en el mismo contenedor. Usa el `Dockerfile` actual con estas variables de entorno:
+Si despliegas tu aplicación en Neon usando Docker Compose y Redis está definido en el mismo stack, entonces el valor correcto es:
+
+- `REDIS_HOST=redis`
+
+Esto aplica porque el servicio Redis se llama `redis` en `docker-compose.yml`, y Docker Compose resuelve ese nombre dentro de la red interna del stack.
+
+Usa el `Dockerfile` actual con estas variables de entorno:
 
 - `REDIS_HOST`
 - `REDIS_PORT`
@@ -108,7 +114,7 @@ Para Neon, no es necesario ejecutar Redis en el mismo contenedor. Usa el `Docker
 - `API_WORKERS`
 - `CACHE_LIST_LIMIT`
 
-Apunta `REDIS_HOST` a tu instancia Redis gestionada y deja `API_PORT=8000`.
+Si en cambio usas un Redis externo fuera del stack, pon el host real de esa instancia.
 
 Para más detalles, consulta `NEON_DEPLOY.md`.
 
