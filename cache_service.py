@@ -187,6 +187,7 @@ async def read_root():
     }
 
 @app.get("/health", tags=["General"])
+@app.get("/cache/health", tags=["General"])
 async def health(r: redis.Redis = Depends(get_redis)):
     try:
         await r.ping()
