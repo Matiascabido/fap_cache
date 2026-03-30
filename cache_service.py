@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     CACHE_LIST_LIMIT: int = 100
     
     # Security
-    API_KEY: str = "super-secret-key-123"  # Cambiar en producción
+    API_KEY: Optional[str] = None
     API_KEY_NAME: str = "X-API-Key"
     
     # Features
@@ -53,6 +53,8 @@ logger = logging.getLogger("cache-service")
 api_key_header = APIKeyHeader(name=settings.API_KEY_NAME, auto_error=False)
 
 async def verify_api_key(api_key: str = Depends(api_key_header)):
+    if not settings.API_KEY:
+        return api_key
     if not api_key or api_key != settings.API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -177,7 +179,7 @@ def deserialize_value(value: Optional[bytes]) -> Any:
         return decompress_value(value)
 
 # --- Endpoints ---
-@app.get("/", tags=["General"])
+@app.api_route("/", methods=["GET", "HEAD"], tags=["General"])
 async def read_root():
     return {
         "service": settings.APP_TITLE,
@@ -186,8 +188,8 @@ async def read_root():
         "health": "/health"
     }
 
-@app.get("/health", tags=["General"])
-@app.get("/cache/health", tags=["General"])
+@app.api_route("/health", methods=["GET", "HEAD"], tags=["General"])
+@app.api_route("/cache/health", methods=["GET", "HEAD"], tags=["General"])
 async def health(r: redis.Redis = Depends(get_redis)):
     try:
         await r.ping()
